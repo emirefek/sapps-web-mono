@@ -1,9 +1,9 @@
 import { useState } from "react";
-import DescriptionInput from "./DescriptionInput";
-import GetGeoLocation from "./GetGeoLocation";
-import SendReportButton from "./SendReportButton";
-import ImageUpload from "./ImageUpload";
-import ImageUploadCamera from "./ImageUploadCamera";
+import DescriptionInput from "../../Components/Report/DescriptionInput";
+import GetGeoLocation from "../../Components/Report/GetGeoLocation";
+import SendReportButton from "../../Components/Report/SendReportButton";
+import ImageUpload from "../../Components/Report/ImageUpload";
+import ImageUploadCamera from "../../Components/Report/ImageUploadCamera";
 
 export default function Report() {
   const [reportImage, setReportImage] = useState(null);
