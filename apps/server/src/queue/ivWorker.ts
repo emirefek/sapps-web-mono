@@ -1,3 +1,4 @@
+import { prisma } from "@/lib/prisma";
 import { redisImQueueConnection } from "@/lib/redis";
 import { Worker } from "bullmq";
 
@@ -6,6 +7,34 @@ export const ivWorker = new Worker(
   async (job) => {
     // Will print { foo: 'bar'} for the first job
     // and { qux: 'baz' } for the second.
+
+    const jobOnDb = await prisma.report.findUnique({
+      where: {
+        id: parseInt(job.data.id),
+      },
+    });
+    if (!jobOnDb) {
+      throw new Error("Job not found");
+    }
+
+    const randBoolStillPending = Math.random() >= 0.5;
+    if (randBoolStillPending) {
+      throw new Error("ivJob still pending");
+    }
+
+    const randBool = Math.random() >= 0.5;
+    const status = randBool ? "APPROVED" : "REJECTED";
+
+    const newDataOnDb = await prisma.report.update({
+      where: {
+        id: parseInt(job.data.id),
+      },
+      data: {
+        status: status,
+      },
+    });
+
+    console.log(newDataOnDb);
     console.log(job.data);
   },
   {

@@ -41,11 +41,12 @@ model Station {
 }
 
 model StationData {
-  id        Int   @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   stationId Int
-  co2       Float
-  co        Float
-  no2       Float
+  temp      Float
+  humidity  Float
+  airq      Float
+  time      DateTime @default(now())
 
   station Station @relation(fields: [stationId], references: [id])
 }
