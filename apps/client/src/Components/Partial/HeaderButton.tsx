@@ -1,5 +1,5 @@
 import { Group, Button } from '@mantine/core';
-import { IconPhoto, IconDownload, IconArrowLeft } from '@tabler/icons-react';
+import {IconArrowLeft } from '@tabler/icons-react';
 import { useNavigate } from 'react-router';
 
 export default function HeaderButton() {
