@@ -1,13 +1,16 @@
 import { RouterProvider } from "react-router-dom";
 import router from "./Routes/route";
 import { MantineProvider, createTheme } from "@mantine/core";
+import TrpcProvider from "./context/TrpcProvider";
 const theme = createTheme({});
 
 function App() {
   return (
-    <MantineProvider theme={theme}>
-      <RouterProvider router={router} />
-    </MantineProvider>
+    <TrpcProvider>
+      <MantineProvider theme={theme}>
+        <RouterProvider router={router} />
+      </MantineProvider>
+    </TrpcProvider>
   );
 }
 

@@ -2,8 +2,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@server/*": ["../server/src/*"],
-      "@client/*": ["./src/*"]
+      "@server/*": ["../server/src/*"]
     },
 
     "target": "ES2020",
