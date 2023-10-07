@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from "react";
-import { Group, Button } from "@mantine/core";
+import { Group, Button, Text } from "@mantine/core";
 import HeaderButton from "../Partial/HeaderButton";
 import axios from "axios";
 import { trpc } from "../../lib/trpc";
@@ -11,6 +11,7 @@ function ImageUploadCamera() {
   const [capturedImage, setCapturedImage] = useState<string>("");
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
+  const [ar, setAr] = useState<number>(1);
   const mutNewReport = trpc.report.new.useMutation();
   const upload_preset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
   const cloud_name = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
@@ -60,14 +61,19 @@ function ImageUploadCamera() {
 
   const startCamera = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 1280, height: 720 }, });
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
       }
+      const track = stream.getVideoTracks()[0];
+      const { width, height } = track.getSettings();
+      const aspectRatio = (width ?? 1) / (height ?? 1);
+      setAr(aspectRatio);      
     } catch (error) {
       console.error("Error accessing the camera:", error);
     }
   };
+
 
   const captureImage = () => {
     if (videoRef.current && canvasRef.current) {
@@ -92,6 +98,11 @@ function ImageUploadCamera() {
     startCamera();
   };
 
+  useEffect(()=>{
+  // Access the tracks and their settings to calculate the aspect ratio
+  
+  }, [])
+
   useEffect(() => {
     startCamera();
   }, []);
@@ -101,7 +112,7 @@ function ImageUploadCamera() {
   }, [longitude, latitude]);
 
   return (
-    <div>
+    <div style={{width: "100%"}}>
       <HeaderButton />
       <canvas ref={canvasRef} style={{ display: "none"}} />
       {capturedImage && (
@@ -111,11 +122,15 @@ function ImageUploadCamera() {
         </div>
       )}
       {capturedImage ? null : (
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', maxWidth: '100%' }}>
-          <video ref={videoRef} autoPlay playsInline style={{ maxWidth: '100%' }}/>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', maxWidth: '100%', aspectRatio: ar }}>
+          <video ref={videoRef} autoPlay playsInline style={{ maxWidth: '100%', maxHeight: '100%' }} />
         </div>
+        // <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', maxWidth: '100%'}}>
+        //   <video ref={videoRef} autoPlay playsInline style={{ maxWidth: '100%' }}/>
+        // </div>
       )}
       <Group justify="flex-end" grow>
+        <Text>{ar}</Text>
         <Button onClick={retry} variant="default">
         <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-rotate-clockwise" width={24} height={24} viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
