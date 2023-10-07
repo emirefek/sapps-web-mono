@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from "react";
-import { Group, Button, Text } from "@mantine/core";
+import { Group, Button } from "@mantine/core";
 import HeaderButton from "../Partial/HeaderButton";
 import axios from "axios";
 import { trpc } from "../../lib/trpc";
@@ -12,10 +12,15 @@ function ImageUploadCamera() {
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
   const [ar, setAr] = useState<number>(1);
+  const [facingMode, setFacingMode] = useState<string>("environment");
   const mutNewReport = trpc.report.new.useMutation();
   const upload_preset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
   const cloud_name = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
   const navigate = useNavigate();
+
+  function changeFacingMode(){
+    setFacingMode(facingMode === "environment" ? "user" : "environment")
+  }
 
   function getLocation() {
     if (navigator.geolocation) {
@@ -61,7 +66,14 @@ function ImageUploadCamera() {
 
   const startCamera = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+    // Release the current stream
+      if (videoRef.current && videoRef.current.srcObject) {
+        const tracks = (videoRef.current.srcObject as MediaStream).getTracks();
+        tracks.forEach((track) => track.stop());
+      }
+
+
+      const stream = await navigator.mediaDevices.getUserMedia({ video: {facingMode: facingMode}});
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
       }
@@ -98,18 +110,13 @@ function ImageUploadCamera() {
     startCamera();
   };
 
-  useEffect(()=>{
-  // Access the tracks and their settings to calculate the aspect ratio
-  
-  }, [])
-
-  useEffect(() => {
-    startCamera();
-  }, []);
-
   useEffect(() => {
     getLocation();    
   }, [longitude, latitude]);
+
+  useEffect(()=>{
+    startCamera();
+  }, [facingMode])
 
   return (
     <div style={{width: "100%"}}>
@@ -125,28 +132,18 @@ function ImageUploadCamera() {
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', maxWidth: '100%', aspectRatio: ar }}>
           <video ref={videoRef} autoPlay playsInline style={{ maxWidth: '100%', maxHeight: '100%' }} />
         </div>
-        // <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', maxWidth: '100%'}}>
-        //   <video ref={videoRef} autoPlay playsInline style={{ maxWidth: '100%' }}/>
-        // </div>
       )}
       <Group justify="flex-end" grow>
-        <Text>{ar}</Text>
-        <Button onClick={retry} variant="default">
-        <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-rotate-clockwise" width={24} height={24} viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M4.05 11a8 8 0 1 1 .5 4m-.5 5v-5h5"></path>
-</svg>
-        </Button>
-        {capturedImage ? null : (
-          <Button onClick={captureImage} variant="default">
-            <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-camera" width={24} height={24} viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M5 7h1a2 2 0 0 0 2 -2a1 1 0 0 1 1 -1h6a1 1 0 0 1 1 1a2 2 0 0 0 2 2h1a2 2 0 0 1 2 2v9a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-9a2 2 0 0 1 2 -2"></path>
-   <path d="M9 13a3 3 0 1 0 6 0a3 3 0 0 0 -6 0"></path>
-</svg>
-          </Button>
-        )}
+        
+
         {!capturedImage ? null : (
+          <>
+          <Button onClick={retry} variant="default">
+          <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-rotate-clockwise" width={24} height={24} viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
+     <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+     <path d="M4.05 11a8 8 0 1 1 .5 4m-.5 5v-5h5"></path>
+  </svg>
+          </Button>
           <Button onClick={uploadImage} variant="default">
           <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-arrow-narrow-right" width={24} height={24} viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
      <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
@@ -155,8 +152,28 @@ function ImageUploadCamera() {
      <path d="M15 8l4 4"></path>
   </svg>
           </Button>
+          </>
         )}
-        
+        {capturedImage ? null : (
+          <>
+          <Button onClick={changeFacingMode} variant="default">
+          <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-camera-rotate" width={24} height={24} viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 7h1a2 2 0 0 0 2 -2a1 1 0 0 1 1 -1h6a1 1 0 0 1 1 1a2 2 0 0 0 2 2h1a2 2 0 0 1 2 2v9a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-9a2 2 0 0 1 2 -2"></path>
+   <path d="M11.245 15.904a3 3 0 0 0 3.755 -2.904m-2.25 -2.905a3 3 0 0 0 -3.75 2.905"></path>
+   <path d="M14 13h2v2"></path>
+   <path d="M10 13h-2v-2"></path>
+</svg>
+          </Button>
+          <Button onClick={captureImage} variant="default">
+            <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-camera" width={24} height={24} viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 7h1a2 2 0 0 0 2 -2a1 1 0 0 1 1 -1h6a1 1 0 0 1 1 1a2 2 0 0 0 2 2h1a2 2 0 0 1 2 2v9a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-9a2 2 0 0 1 2 -2"></path>
+   <path d="M9 13a3 3 0 1 0 6 0a3 3 0 0 0 -6 0"></path>
+</svg>
+          </Button>
+          </>
+        )}
       </Group>
     </div>
   );
