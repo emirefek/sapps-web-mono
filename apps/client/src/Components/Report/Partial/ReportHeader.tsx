@@ -7,10 +7,7 @@ function ReportHeader () {
     <>
     <Grid>
       <Grid.Col span={8}>
-        <Text style={{padding: "15px"}}>Ahmet Emre Akar</Text>
-      </Grid.Col>
-      <Grid.Col span={4} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-        <UnstyledButton><IconCurrentLocation size={14} /></UnstyledButton>
+        <Text style={{padding: "15px"}}>Fatih Terim</Text>
       </Grid.Col>
     </Grid>
     <Space h="xl" />

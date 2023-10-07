@@ -3,7 +3,7 @@ import { Group, Button } from "@mantine/core";
 import HeaderButton from "../Partial/HeaderButton";
 import axios from "axios";
 import { trpc } from "../../lib/trpc";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function ImageUploadCamera() {
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -18,8 +18,8 @@ function ImageUploadCamera() {
   const cloud_name = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
   const navigate = useNavigate();
 
-  function changeFacingMode(){
-    setFacingMode(facingMode === "environment" ? "user" : "environment")
+  function changeFacingMode() {
+    setFacingMode(facingMode === "environment" ? "user" : "environment");
   }
 
   function getLocation() {
@@ -31,12 +31,15 @@ function ImageUploadCamera() {
   }
 
   function showPosition(position: GeolocationPosition) {
-    setLatitude(position.coords.latitude);
-    setLongitude(position.coords.longitude);
+    const coords = position.coords;
+    setLatitude(coords.latitude);
+    setLongitude(coords.longitude);
   }
 
   async function uploadImage() {
     console.log(upload_preset, cloud_name);
+    console.log(latitude, longitude);
+    
     if (capturedImage != "") {
       const resp = await axios({
         url: `https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`,
@@ -51,13 +54,14 @@ function ImageUploadCamera() {
       });
       console.log(resp);
 
-      mutNewReport.mutate({
+      const resp1 = await mutNewReport.mutateAsync({
         image: resp.data["secure_url"],
         location: {
           latitude: latitude || 0,
           longitude: longitude || 0,
         },
       });
+      console.log("trpcMutateResp", resp1);
 
       navigate("/report");
       return resp.data;
@@ -66,26 +70,26 @@ function ImageUploadCamera() {
 
   const startCamera = async () => {
     try {
-    // Release the current stream
+      // Release the current stream
       if (videoRef.current && videoRef.current.srcObject) {
         const tracks = (videoRef.current.srcObject as MediaStream).getTracks();
         tracks.forEach((track) => track.stop());
       }
 
-
-      const stream = await navigator.mediaDevices.getUserMedia({ video: {facingMode: facingMode}});
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: facingMode },
+      });
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
       }
       const track = stream.getVideoTracks()[0];
       const { width, height } = track.getSettings();
       const aspectRatio = (width ?? 1) / (height ?? 1);
-      setAr(aspectRatio);      
+      setAr(aspectRatio);
     } catch (error) {
       console.error("Error accessing the camera:", error);
     }
   };
-
 
   const captureImage = () => {
     if (videoRef.current && canvasRef.current) {
@@ -111,69 +115,153 @@ function ImageUploadCamera() {
   };
 
   useEffect(() => {
-    getLocation();    
-  }, [longitude, latitude]);
+    getLocation();
+  }, []);
 
-  useEffect(()=>{
+  useEffect(() => {
     startCamera();
-  }, [facingMode])
+  }, [facingMode]);
+
+  const handleFileChange = (event: any) => {
+    const selectedFile = event.target.files?.[0]; // Get the first selected file
+
+    if (selectedFile) {
+      // Create a FileReader
+      const reader = new FileReader();
+
+      // Define a callback function for when the FileReader has finished reading the file
+      reader.onload = (e) => {
+        // e.target.result contains the data URL
+        const dataURL = e.target?.result as string;
+        setCapturedImage(dataURL);
+      };
+
+      // Read the selected file as a data URL
+      reader.readAsDataURL(selectedFile);
+    }
+  };
 
   return (
-    <div style={{width: "100%"}}>
+    <div style={{ width: "100%" }}>
       <HeaderButton />
-      <canvas ref={canvasRef} style={{ display: "none"}} />
+      <canvas ref={canvasRef} style={{ display: "none" }} />
       {capturedImage && (
-        <div>
-          <h3>Captured Image:</h3>
-          <img src={capturedImage} alt="Captured" />
+        <div style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          maxWidth: "100%",
+          aspectRatio: ar,
+        }}>
+          <img style={{ maxWidth: "100%", maxHeight: "100%" }} src={capturedImage} alt="Captured" />
         </div>
       )}
       {capturedImage ? null : (
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', maxWidth: '100%', aspectRatio: ar }}>
-          <video ref={videoRef} autoPlay playsInline style={{ maxWidth: '100%', maxHeight: '100%' }} />
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            maxWidth: "100%",
+            aspectRatio: ar,
+          }}
+        >
+          <video
+            ref={videoRef}
+            autoPlay
+            playsInline
+            style={{ maxWidth: "100%", maxHeight: "100%" }}
+          />
         </div>
       )}
       <Group justify="flex-end" grow>
-        
-
         {!capturedImage ? null : (
           <>
-          <Button onClick={retry} variant="default">
-          <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-rotate-clockwise" width={24} height={24} viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
-     <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-     <path d="M4.05 11a8 8 0 1 1 .5 4m-.5 5v-5h5"></path>
-  </svg>
-          </Button>
-          <Button onClick={uploadImage} variant="default">
-          <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-arrow-narrow-right" width={24} height={24} viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
-     <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-     <path d="M5 12l14 0"></path>
-     <path d="M15 16l4 -4"></path>
-     <path d="M15 8l4 4"></path>
-  </svg>
-          </Button>
+            <Button onClick={retry} variant="default">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="icon icon-tabler icon-tabler-rotate-clockwise"
+                width={24}
+                height={24}
+                viewBox="0 0 24 24"
+                strokeWidth="2"
+                stroke="currentColor"
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                <path d="M4.05 11a8 8 0 1 1 .5 4m-.5 5v-5h5"></path>
+              </svg>
+            </Button>
+            <Button onClick={uploadImage} variant="default">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="icon icon-tabler icon-tabler-arrow-narrow-right"
+                width={24}
+                height={24}
+                viewBox="0 0 24 24"
+                strokeWidth="2"
+                stroke="currentColor"
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                <path d="M5 12l14 0"></path>
+                <path d="M15 16l4 -4"></path>
+                <path d="M15 8l4 4"></path>
+              </svg>
+            </Button>
           </>
         )}
         {capturedImage ? null : (
           <>
-          <Button onClick={changeFacingMode} variant="default">
-          <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-camera-rotate" width={24} height={24} viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M5 7h1a2 2 0 0 0 2 -2a1 1 0 0 1 1 -1h6a1 1 0 0 1 1 1a2 2 0 0 0 2 2h1a2 2 0 0 1 2 2v9a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-9a2 2 0 0 1 2 -2"></path>
-   <path d="M11.245 15.904a3 3 0 0 0 3.755 -2.904m-2.25 -2.905a3 3 0 0 0 -3.75 2.905"></path>
-   <path d="M14 13h2v2"></path>
-   <path d="M10 13h-2v-2"></path>
-</svg>
-          </Button>
-          <Button onClick={captureImage} variant="default">
-            <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-camera" width={24} height={24} viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M5 7h1a2 2 0 0 0 2 -2a1 1 0 0 1 1 -1h6a1 1 0 0 1 1 1a2 2 0 0 0 2 2h1a2 2 0 0 1 2 2v9a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-9a2 2 0 0 1 2 -2"></path>
-   <path d="M9 13a3 3 0 1 0 6 0a3 3 0 0 0 -6 0"></path>
-</svg>
-          </Button>
+            <Button onClick={changeFacingMode} variant="default">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="icon icon-tabler icon-tabler-camera-rotate"
+                width={24}
+                height={24}
+                viewBox="0 0 24 24"
+                strokeWidth="2"
+                stroke="currentColor"
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                <path d="M5 7h1a2 2 0 0 0 2 -2a1 1 0 0 1 1 -1h6a1 1 0 0 1 1 1a2 2 0 0 0 2 2h1a2 2 0 0 1 2 2v9a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-9a2 2 0 0 1 2 -2"></path>
+                <path d="M11.245 15.904a3 3 0 0 0 3.755 -2.904m-2.25 -2.905a3 3 0 0 0 -3.75 2.905"></path>
+                <path d="M14 13h2v2"></path>
+                <path d="M10 13h-2v-2"></path>
+              </svg>
+            </Button>
+            <Button onClick={captureImage} variant="default">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="icon icon-tabler icon-tabler-camera"
+                width={24}
+                height={24}
+                viewBox="0 0 24 24"
+                strokeWidth="2"
+                stroke="currentColor"
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                <path d="M5 7h1a2 2 0 0 0 2 -2a1 1 0 0 1 1 -1h6a1 1 0 0 1 1 1a2 2 0 0 0 2 2h1a2 2 0 0 1 2 2v9a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-9a2 2 0 0 1 2 -2"></path>
+                <path d="M9 13a3 3 0 1 0 6 0a3 3 0 0 0 -6 0"></path>
+              </svg>
+            </Button>
           </>
         )}
+        <input
+          type="file"
+          accept="image/*" // Define accepted file types if needed
+          onChange={handleFileChange}
+        ></input>
       </Group>
     </div>
   );
