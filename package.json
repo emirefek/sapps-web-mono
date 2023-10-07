@@ -1,0 +1,21 @@
+{
+  "name": "sapps-web-mono",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "",
+  "main": "index.js",
+  "workspaces": [
+    "apps/client",
+    "apps/server"
+  ],
+  "scripts": {
+    "dev:client": "npm run dev -w client",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "engines": {
+    "node": "18.x",
+    "npm": "10.2.0"
+  }
+}
