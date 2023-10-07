@@ -1,5 +1,6 @@
-import { Flex, Button, Container } from '@mantine/core';
+import { Flex, Button, Container, Stack } from '@mantine/core';
 import HeaderButton from './HeaderButton';
+
 export default function HeaderBasic() {
   const demoProps = {
     bg: 'var(--mantine-color-blue-light)',
@@ -7,9 +8,16 @@ export default function HeaderBasic() {
     mt: 'md',
   };
   return (
-    <Container fluid {...demoProps} 
+    <Stack 
+      h={300}
+      bg="var(--mantine-color-blue-light)"
+      align='stretch'
+      justify='flex-start'
+      style={{
+        width: "100%"
+      }}
     >
       <HeaderButton />
-    </Container>
+    </Stack>
   )
 }

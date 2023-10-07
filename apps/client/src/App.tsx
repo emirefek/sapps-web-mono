@@ -1,23 +1,19 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-import * as ReactDOM from 'react-dom';
-import * as React from 'react';
-import { useEffect } from 'react';
-import { FabComponent } from "@syncfusion/ej2-react-buttons";
-import HeaderBasic from './Header';
-import { MantineProvider } from '@mantine/core';
-import FAB from './ActionButton';
+import { RouterProvider } from 'react-router-dom';
+import router from './Routes/route';
+import React from 'react';
+import { MantineProvider, createTheme } from '@mantine/core';
+const theme = createTheme({
 
+});
 
 function App() {
-  const [count, setCount] = useState(0)
   return (
-    <MantineProvider>
-      <HeaderBasic/>
-      <FAB />
+    <MantineProvider theme={theme}>
+      <RouterProvider router={router} />
     </MantineProvider>
+
+    
   )
 }
 
