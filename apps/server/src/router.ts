@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { publicProcedure, router } from "@/lib/trpc";
 import demoRouter from "./router/demo";
+import reportRouter from "./router/report";
 
 const helloRouter = router({
   greeting: publicProcedure
@@ -13,6 +14,7 @@ const helloRouter = router({
 export const appRouter = router({
   hello: helloRouter,
   demo: demoRouter,
+  report: reportRouter,
 });
 
 export type AppRouter = typeof appRouter;

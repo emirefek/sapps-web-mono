@@ -16,3 +16,29 @@ model Test {
   title String
   body  String
 }
+
+model Report {
+  id        Int    @id @default(autoincrement())
+  longitude Float
+  latitude  Float
+  image     String
+}
+
+model Station {
+  id        Int    @id @default(autoincrement())
+  longitude Float
+  latitude  Float
+  name      String
+
+  StationData StationData[]
+}
+
+model StationData {
+  id        Int   @id @default(autoincrement())
+  stationId Int
+  co2       Float
+  co        Float
+  no2       Float
+
+  station Station @relation(fields: [stationId], references: [id])
+}
