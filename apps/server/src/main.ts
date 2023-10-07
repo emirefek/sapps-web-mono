@@ -1,3 +1,11 @@
+import path from "path";
+import dotenv from "dotenv";
+
+const envPath = path.join(__dirname, "../../.." + "/.env");
+dotenv.config({
+  path: envPath,
+});
+
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import express from "express";
 import { appRouter } from "./router";
@@ -34,6 +42,7 @@ async function main() {
 
   app.listen(3000);
   console.log("🚀 Server ready at http://localhost:3000");
+  console.log("DEMO: ", process.env.DEMO);
 }
 
 void main();
