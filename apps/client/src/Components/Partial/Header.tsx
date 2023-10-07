@@ -1,4 +1,4 @@
-import { Flex, Button, Container, Stack } from '@mantine/core';
+import { Stack } from '@mantine/core';
 import HeaderButton from './HeaderButton';
 
 export default function HeaderBasic() {

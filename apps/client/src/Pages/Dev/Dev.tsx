@@ -1,12 +1,12 @@
 import { trpc } from "../../lib/trpc";
-import HeaderBasic from "../../Header";
+import HeaderBasic from "src/Components/Partial/Header";
 
 export default function Dev() {
   const { data } = trpc.demo.get.useQuery();
 
   return (
     <>
-      <HeaderBasic />
+      {/* <HeaderBasic /> */}
       <div>awdawdawdawd</div>
       {JSON.stringify(data)}
     </>
