@@ -1,9 +1,9 @@
 import { useState } from "react";
-import DescriptionInput from "../../Components/Report/DescriptionInput";
-import GetGeoLocation from "../../Components/Report/GetGeoLocation";
 import SendReportButton from "../../Components/Report/SendReportButton";
-import ImageUpload from "../../Components/Report/ImageUpload";
 import ImageUploadCamera from "../../Components/Report/ImageUploadCamera";
+import ReportHeader from "../../Components/Report/Partial/ReportHeader"
+import { Flex } from "@mantine/core";
+import ReportFooter from "../../Components/Report/Partial/ReportFooter";
 
 export default function Report() {
   const [reportImage, setReportImage] = useState(null);
@@ -11,12 +11,17 @@ export default function Report() {
   const [reportLocation, setReportLocation] = useState({});
 
   return (
-    <div>
+    <Flex direction="column" justify="space-between" style={{
+      height: "100vh"
+    }}>
       {/* <ImageUpload/> */}
-      <ImageUploadCamera />
+      <ReportHeader />
+      <div style={{flex: "1 1 0%", backgroundColor: "red"}}>
+      </div>
       {/* <DescriptionInput setDesc={setReportDesc}/>
       <GetGeoLocation setLoc={setReportLocation}/> */}
-      <SendReportButton />
-    </div>
+      {/* <SendReportButton /> */}
+      <ReportFooter />
+    </Flex>
   );
 }

@@ -1,9 +1,17 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
+import { Group, Button } from '@mantine/core';
+import HeaderButton from '../Partial/HeaderButton';
+import {v2 as cloudinary} from 
+          
+cloudinary.config({ 
+  cloud_name: 'dygncw193', 
+  api_key: '462962765672646', 
+  api_secret: 'JL_nPBQZnQ0ynRIltAQ5vVezVhQ' 
+});
 
 const ImageUploadCamera: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
 
   const startCamera = async () => {
@@ -35,21 +43,33 @@ const ImageUploadCamera: React.FC = () => {
     }
   };
 
+  const retry = () => {
+    setCapturedImage(null);
+    startCamera();
+  };
+
+  useEffect(()=>{
+    startCamera();
+  }, [])
+
   return (
     <div>
-      <h2>Camera Component</h2>
-      <button onClick={startCamera}>Start Camera</button>
-      <button onClick={captureImage}>Capture Image</button>
-      <div>
-        <video ref={videoRef} autoPlay playsInline />
-      </div>
+      <HeaderButton /> 
+      <canvas ref={canvasRef} style={{ display: 'none' }} />
       {capturedImage && (
         <div>
           <h3>Captured Image:</h3>
           <img src={capturedImage} alt="Captured" />
         </div>
       )}
-      <canvas ref={canvasRef} style={{ display: 'none' }} />
+      {capturedImage ? null : <div>
+        <video ref={videoRef} autoPlay playsInline />
+      </div>}
+      <Group justify='flex-end' grow>
+       <Button onClick={retry} variant="default">Retry</Button>
+        {capturedImage ? null : <Button onClick={captureImage} variant="default">Take Picture</Button>}
+        <Button onClick={retry} variant="default">Proceed</Button>
+      </Group>
     </div>
   );
 };
