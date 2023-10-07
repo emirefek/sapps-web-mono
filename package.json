@@ -9,7 +9,8 @@
     "apps/server"
   ],
   "scripts": {
-    "dev": "run-p dev:*",
+    "dev1": "run-p dev:*",
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
     "dev:server": "npm run dev -w server",
     "dev:client": "npm run dev -w client",
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -27,6 +28,7 @@
     "dotenv-cli": "^7.3.0"
   },
   "dependencies": {
+    "concurrently": "^8.2.1",
     "npm-run-all": "^4.1.5",
     "wait-port": "^1.1.0"
   }

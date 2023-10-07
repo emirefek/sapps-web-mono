@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { publicProcedure, router } from "@/lib/trpc";
+import { ivQueueAdd } from "@/queue/iv";
 import { z } from "zod";
 
 const reportRouter = router({
@@ -14,9 +15,7 @@ const reportRouter = router({
       })
     )
     .mutation(async ({ input }) => {
-      const data = await prisma.test.findMany();
-
-      await prisma.report.create({
+      const onDb = await prisma.report.create({
         data: {
           latitude: input.location.latitude,
           longitude: input.location.longitude,
@@ -24,8 +23,31 @@ const reportRouter = router({
         },
       });
 
-      return data;
+      ivQueueAdd(onDb.id.toString());
+
+      return onDb;
     }),
+  all: publicProcedure.query(async () => {
+    const data = await prisma.report.findMany({
+      where: {
+        OR: [
+          {
+            status: "APPROVED",
+          },
+          {
+            status: "REJECTED",
+          },
+          {
+            status: "PENDING",
+          },
+        ],
+      },
+    });
+
+    console.log(data);
+
+    return data;
+  }),
 });
 
 export default reportRouter;

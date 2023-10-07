@@ -17,11 +17,18 @@ model Test {
   body  String
 }
 
+enum ReportStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
 model Report {
-  id        Int    @id @default(autoincrement())
+  id        Int          @id @default(autoincrement())
   longitude Float
   latitude  Float
   image     String
+  status    ReportStatus @default(PENDING)
 }
 
 model Station {
