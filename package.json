@@ -11,12 +11,18 @@
   "scripts": {
     "dev:server": "npm run dev -w server",
     "dev:client": "npm run dev -w client",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "npm run db:generate -w server",
+    "db:migrate": "npm run db:migrate -w server",
+    "db:studio": "npm run db:studio -w server"
   },
   "author": "",
   "license": "ISC",
   "engines": {
     "node": "18.x",
     "npm": "10.2.0"
+  },
+  "devDependencies": {
+    "dotenv-cli": "^7.3.0"
   }
 }
