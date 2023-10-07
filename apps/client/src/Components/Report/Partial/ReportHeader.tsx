@@ -1,5 +1,4 @@
-import  { useState } from 'react';
-import { Button, UnstyledButton, Box, Paper, Text, Grid, Center, Container, Flex, Space } from '@mantine/core';
+import {  UnstyledButton,  Text, Grid,  Space } from '@mantine/core';
 import { IconCurrentLocation } from '@tabler/icons-react';
 import { EduCollapse } from '../EduCollapse';
 

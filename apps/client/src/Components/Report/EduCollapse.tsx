@@ -9,7 +9,7 @@ export function EduCollapse() {
       <Group justify="center" mb={5}>
         <Button leftSection={<IconChevronsDown size={14} />}  onClick={toggle}>Education</Button>
       </Group>
-      <Collapse in={opened} transitionDuration={1000} transitionTimingFunction="linear">
+      <Collapse in={opened} transitionDuration={250} transitionTimingFunction="linear">
         <Text>Aman hocam</Text>
       </Collapse>
     </Box>
