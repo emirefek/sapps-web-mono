@@ -1,11 +1,17 @@
-import React from 'react'
-import HeaderBasic from '../../Components/Partial/Header';
-import { MantineProvider } from '@mantine/core';
-
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom"
 export default function Home() {
+  const navigate = useNavigate();
+  function redirect(){
+    navigate("/report", {replace: true})
+  }
+  useEffect(()=>{
+  redirect();
+
+  }, [])
   return (
-   <>
-      {/* <HeaderBasic/> */}
-      </>
+    <>
+      
+    </>
   )
 }

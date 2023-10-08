@@ -1,9 +1,8 @@
 import { useRef, useState, useEffect } from "react";
-import { Group, Button, UnstyledButton, Flex } from "@mantine/core";
+import { Group, Button, Flex } from "@mantine/core";
 import HeaderButton from "../Partial/HeaderButton";
 import axios from "axios";
 import { trpc } from "../../lib/trpc";
-import { useNavigate } from "react-router-dom";
 
 function ImageUploadCamera() {
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -16,7 +15,6 @@ function ImageUploadCamera() {
   const mutNewReport = trpc.report.new.useMutation();
   const upload_preset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
   const cloud_name = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
-  const navigate = useNavigate();
 
   function changeFacingMode() {
     setFacingMode(facingMode === "environment" ? "user" : "environment");
@@ -63,7 +61,7 @@ function ImageUploadCamera() {
       });
       console.log("trpcMutateResp", resp1);
 
-      navigate("/report");
+      // navigate("/report");
       return resp.data;
     }
   }
@@ -122,7 +120,7 @@ function ImageUploadCamera() {
     startCamera();
   }, [facingMode]);
 
-  const handleFileChange = (event: any) => {
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0]; // Get the first selected file
 
     if (selectedFile) {
