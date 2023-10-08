@@ -1,10 +1,9 @@
 import { prisma } from "../lib/prisma";
 import { publicProcedure, router } from "../lib/trpc";
-import { ivQueueAdd } from "../queue/iv";
+// import { ivQueueAdd } from "../queue/iv";
 import { z } from "zod";
 import { getBoundsOfDistance } from "geolib";
 import { ivSendImage } from "../lib/ivfetch";
-import { tryCatch } from "bullmq";
 
 const reportRouter = router({
   new: publicProcedure

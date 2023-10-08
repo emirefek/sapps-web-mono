@@ -32,7 +32,7 @@
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["src", "vite.config.ts"],
-  "references": [{ "path": "../server" }]
+  "include": ["src", "vite.config.ts"]
+  // "references": [{ "path": "../server" }]
   //"references": [{ "path": "./tsconfig.node.json" }]
 }
