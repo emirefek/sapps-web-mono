@@ -76,6 +76,13 @@ const reportRouter = router({
           ],
           ...getFilterQuery(),
         },
+        select: {
+          id: true,
+          latitude: true,
+          longitude: true,
+          status: true,
+          timestamp: true,
+        },
       });
 
       console.log(data);

@@ -9,6 +9,10 @@
     "apps/server"
   ],
   "scripts": {
+    "start:server": "npm run start -w server",
+    "build": "npm run build:client && npm run build:server",
+    "build:client": "npm run build -w client",
+    "build:server": "npm run build -w server",
     "dev1": "run-p dev:*",
     "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
     "dev:server": "npm run dev -w server",

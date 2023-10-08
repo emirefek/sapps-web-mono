@@ -1,6 +1,6 @@
-import { StationAvg } from "@/class/StationAvg";
-import { prisma } from "@/lib/prisma";
-import { publicProcedure, router } from "@/lib/trpc";
+import { StationAvg } from "../class/StationAvg";
+import { prisma } from "../lib/prisma";
+import { publicProcedure, router } from "../lib/trpc";
 import { z } from "zod";
 
 const stationRouter = router({

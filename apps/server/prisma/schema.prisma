@@ -29,6 +29,7 @@ model Report {
   latitude  Float
   image     String
   status    ReportStatus @default(PENDING)
+  timestamp DateTime     @default(now())
 }
 
 model Station {
