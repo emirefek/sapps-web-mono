@@ -39,10 +39,10 @@ function ImageUploadCamera() {
   async function uploadImage() {
     console.log(upload_preset, cloud_name);
     console.log(latitude, longitude);
-    
+
     if (capturedImage != "") {
       const resp = await axios({
-        url: `https://api.cloudinary.com/v1_1/${cloud_name}/image/upload/f_jpg`,
+        url: `https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`,
         method: "POST",
         data: JSON.stringify({
           file: capturedImage,
@@ -142,26 +142,32 @@ function ImageUploadCamera() {
   };
 
   return (
-      <Flex
-        align={"flex-start"}
-        justify={"space-between"}
-        direction={"column"}
-        style={{
-          height: "100vh",
-          width: "100%",
-        }}
-      >
+    <Flex
+      align={"flex-start"}
+      justify={"space-between"}
+      direction={"column"}
+      style={{
+        height: "100vh",
+        width: "100%",
+      }}
+    >
       <HeaderButton />
       <canvas ref={canvasRef} style={{ display: "none" }} />
       {capturedImage && (
-        <div style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          maxWidth: "100%",
-          aspectRatio: ar,
-        }}>
-          <img style={{ maxWidth: "100%", maxHeight: "100%" }} src={capturedImage} alt="Captured" />
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            maxWidth: "100%",
+            aspectRatio: ar,
+          }}
+        >
+          <img
+            style={{ maxWidth: "100%", maxHeight: "100%" }}
+            src={capturedImage}
+            alt="Captured"
+          />
         </div>
       )}
       {capturedImage ? null : (
@@ -272,8 +278,7 @@ function ImageUploadCamera() {
           style={{ display: "none" }}
         ></input>
       </Group>
-
-      </Flex>
+    </Flex>
   );
 }
 
