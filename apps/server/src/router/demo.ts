@@ -1,5 +1,5 @@
-import { prisma } from "@/lib/prisma";
-import { publicProcedure, router } from "@/lib/trpc";
+import { prisma } from "../lib/prisma";
+import { publicProcedure, router } from "../lib/trpc";
 
 const demoRouter = router({
   get: publicProcedure.query(async () => {
