@@ -14,7 +14,11 @@ export async function ivSendImage(image_url: string) {
     // const encodedImage = imageBuffer.toString("base64");
     // console.log("encodedImage", encodedImage);
 
-    const postResponse = await axios("http://127.0.0.1:5000/process_image", {
+    if (!process.env.PYTHON_AI_URL) {
+      throw new Error("PYTHON_AI_URL is undefined");
+    }
+
+    const postResponse = await axios(process.env.PYTHON_AI_URL, {
       method: "POST",
       data: {
         image: encodedImage,

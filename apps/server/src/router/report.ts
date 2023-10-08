@@ -34,6 +34,7 @@ const reportRouter = router({
       } catch (error) {
         console.error("Error:", error);
       }
+      console.log("ivResp", ivResp);
 
       const updatedOnDb = await prisma.report.update({
         where: {
@@ -81,17 +82,16 @@ const reportRouter = router({
 
       const data = await prisma.report.findMany({
         where: {
-          OR: [
-            {
-              status: "APPROVED",
-            },
-            // {
-            //   status: "REJECTED",
-            // },
-            // {
-            //   status: "PENDING",
-            // },
-          ],
+          status: "APPROVED",
+          // OR: [
+          //   {},
+          //   // {
+          //   //   status: "REJECTED",
+          //   // },
+          //   // {
+          //   //   status: "PENDING",
+          //   // },
+          // ],
           ...getFilterQuery(),
         },
         select: {
@@ -102,8 +102,6 @@ const reportRouter = router({
           timestamp: true,
         },
       });
-
-      console.log(data);
 
       return data;
     }),
