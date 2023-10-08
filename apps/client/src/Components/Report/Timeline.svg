@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="katman_1" data-name="katman 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
+  <defs>
+    <style>
+      .cls-1 {
+        stroke-width: 0px;
+      }
+
+      .cls-2 {
+        fill: #fff;
+      }
+
+      .cls-2, .cls-3 {
+        stroke: #000;
+        stroke-miterlimit: 10;
+        stroke-width: 4px;
+      }
+    </style>
+  </defs>
+  <g>
+    <circle class="cls-2" cx="41" cy="16.74" r="6.7"/>
+    <circle class="cls-3" cx="9" cy="16.74" r="6.7"/>
+    <path class="cls-2" d="m15.69,16.74h18.61H15.69Z"/>
+  </g>
+  <g>
+    <path class="cls-1" d="m4.35,34.24h-2.05v-1.55h5.86v1.55h-2.06v5.71h-1.74v-5.71Z"/>
+    <path class="cls-1" d="m8.89,32.69h1.73v7.26h-1.73v-7.26Z"/>
+    <path class="cls-1" d="m11.74,32.69h2.2l1.7,4.87,1.7-4.87h2.21v7.26h-1.74v-4.27h-.06l-1.46,4.27h-1.29l-1.46-4.27h-.06v4.27h-1.73v-7.26Z"/>
+    <path class="cls-1" d="m20.64,32.69h5.05v1.51h-3.32v1.41h3.01v1.35h-3.01v1.47h3.42v1.51h-5.15v-7.26Z"/>
+    <path class="cls-1" d="m26.59,32.69h1.73v5.75h3.25v1.51h-4.98v-7.26Z"/>
+    <path class="cls-1" d="m32.35,32.69h1.73v7.26h-1.73v-7.26Z"/>
+    <path class="cls-1" d="m35.2,32.69h1.79l2.68,4.45h.04v-4.45h1.74v7.26h-1.87l-2.61-4.33h-.04v4.33h-1.73v-7.26Z"/>
+    <path class="cls-1" d="m42.55,32.69h5.05v1.51h-3.32v1.41h3.01v1.35h-3.01v1.47h3.42v1.51h-5.15v-7.26Z"/>
+  </g>
+</svg>
