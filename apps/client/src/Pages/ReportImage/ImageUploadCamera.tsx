@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from "react";
 import { UnstyledButton, Button, Flex, Text, Space } from "@mantine/core";
-import HeaderButton from "../Partial/HeaderButton";
+import HeaderButton from "../../Components/Partial/HeaderButton";
 import axios from "axios";
 import { trpc } from "../../lib/trpc";
 import { useDisclosure } from "@mantine/hooks";
@@ -12,7 +12,7 @@ import {
   IconCameraRotate,
   IconCamera,
 } from "@tabler/icons-react";
-import { useLocation } from "../../context/LocationProvider"
+import { useLocation } from "../../context/LocationProvider";
 
 function ImageUploadCamera() {
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -81,7 +81,7 @@ function ImageUploadCamera() {
       }
 
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: { 
+        video: {
           facingMode: facingMode,
         },
       });
@@ -123,7 +123,6 @@ function ImageUploadCamera() {
   useEffect(() => {
     startCamera();
   }, [facingMode]);
-
 
   return (
     <Flex
@@ -171,25 +170,27 @@ function ImageUploadCamera() {
         </div>
       )}
       <Space h="sm" />
-      <Flex
-        align={"center"}
-        justify={"space-evenly"}
-        
-      >
+      <Flex align={"center"} justify={"space-evenly"}>
         {!capturedImage ? null : (
           <>
-            <UnstyledButton onClick={retry}><IconRotateClockwise size={60}/></UnstyledButton>
-            <UnstyledButton onClick={uploadImage} variant="default"><IconArrowNarrowRight size={60}/></UnstyledButton>
+            <UnstyledButton onClick={retry}>
+              <IconRotateClockwise size={60} />
+            </UnstyledButton>
+            <UnstyledButton onClick={uploadImage} variant="default">
+              <IconArrowNarrowRight size={60} />
+            </UnstyledButton>
           </>
         )}
         {capturedImage ? null : (
           <>
-            <UnstyledButton onClick={changeFacingMode} variant="default"><IconCameraRotate size={60}/></UnstyledButton>
-            <UnstyledButton onClick={captureImage} variant="default" ><IconCamera size={60}/></UnstyledButton>
+            <UnstyledButton onClick={changeFacingMode} variant="default">
+              <IconCameraRotate size={60} />
+            </UnstyledButton>
+            <UnstyledButton onClick={captureImage} variant="default">
+              <IconCamera size={60} />
+            </UnstyledButton>
           </>
         )}
-        
-        
       </Flex>
       <Flex>
         <div
@@ -212,7 +213,7 @@ function ImageUploadCamera() {
             </Button>
           </Modal>
         </div>
-        </Flex>
+      </Flex>
     </Flex>
   );
 }
