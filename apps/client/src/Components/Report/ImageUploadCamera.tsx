@@ -42,7 +42,7 @@ function ImageUploadCamera() {
     
     if (capturedImage != "") {
       const resp = await axios({
-        url: `https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`,
+        url: `https://api.cloudinary.com/v1_1/${cloud_name}/image/upload/f_jpg`,
         method: "POST",
         data: JSON.stringify({
           file: capturedImage,
