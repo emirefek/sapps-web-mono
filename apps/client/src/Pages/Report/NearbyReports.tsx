@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Flex, Slider, Fieldset, TextInput, Button, Space, Table } from '@mantine/core'
 import { trpc } from '../../lib/trpc'
 
