@@ -208,22 +208,14 @@ function ImageUploadCamera() {
       <Group justify="flex-end" grow>
         {!capturedImage ? null : (
           <>
-            <Button onClick={retry} variant="danger">
-              <IconRotateClockwise />
-            </Button>
-            <Button onClick={uploadImage} variant="primary">
-              <IconArrowNarrowRight />
-            </Button>
+            <Button leftSection={<IconRotateClockwise />} onClick={retry} variant="default"/>
+            <Button leftSection={<IconArrowNarrowRight />} onClick={uploadImage} variant="default" />
           </>
         )}
         {capturedImage ? null : (
           <>
-            <Button onClick={changeFacingMode} variant="default">
-              <IconCameraRotate />
-            </Button>
-            <Button onClick={captureImage} variant="default">
-              <IconCamera />
-            </Button>
+            <Button leftSection={<IconCameraRotate />} onClick={changeFacingMode} variant="default" />
+            <Button leftSection={<IconCamera />} onClick={captureImage} variant="default" />
           </>
         )}
         <input
