@@ -131,3 +131,4 @@ dist
 
 
 apps/server/dist
+apps/imageverif/runs/detect/predict6
