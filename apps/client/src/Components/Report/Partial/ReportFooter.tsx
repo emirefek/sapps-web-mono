@@ -1,28 +1,98 @@
-import { Group, Button, UnstyledButton } from '@mantine/core';
+import { Group, Modal, UnstyledButton, Timeline, Text, List, ThemeIcon, Space} from '@mantine/core';
 import { useNavigate } from 'react-router';
 import firesvg from "../FIRE.svg";
-
+import previousReportSvg from "../PreviousReport.svg";
+import timelineSvg from "../Timeline.svg";
+import { useDisclosure } from '@mantine/hooks';
+import { IconGitBranch, IconGitPullRequest, IconGitCommit, IconMessageDots, IconCircleCheck, IconCircleDashed  } from '@tabler/icons-react';
+import { useState } from 'react';
 export default function ReportFooter() {
   const navigate = useNavigate();
+  const [opened, { open, close }] = useDisclosure(false);
+  const [active, setActive] = useState(1);
+
   return (
+    <>
     <Group style={{padding: "15px"}} 
     justify='flex-end' grow>
-    <Button leftSection={<svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-rotate" width={24} height={24} viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M19.95 11a8 8 0 1 0 -.5 4m.5 5v-5h-5"></path>
-</svg>} style={{height: "50px", width: "50px"}}  variant="default">Past Papers</Button>
+    <UnstyledButton style={{display: "flex", height: "50px", width: "50px", justifyContent: "center"}} onClick={()=> {open(); setActive(0);}} variant="default">
+    <img style={{height: "50px", width: "50px"}} src={previousReportSvg}/> 
+    </UnstyledButton>
     <UnstyledButton onClick={()=>{ navigate("/report/picture", {replace: true}) }} 
     style={{display: "flex", height: "50px", width: "50px", justifyContent: "center"}}
     >
     <img style={{height: "50px", width: "50px"}} src={firesvg}/>   
     </UnstyledButton>
-    <Button leftSection={<svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-timeline-event" width={24} height={24} viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M12 20m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
-   <path d="M10 20h-6"></path>
-   <path d="M14 20h6"></path>
-   <path d="M12 15l-2 -2h-3a1 1 0 0 1 -1 -1v-8a1 1 0 0 1 1 -1h10a1 1 0 0 1 1 1v8a1 1 0 0 1 -1 1h-3l-2 2z"></path>
-</svg>} style={{height: "50px", width: "50px"}} variant="default">Timeline</Button>
+    <UnstyledButton style={{display: "flex", height: "50px", width: "50px", justifyContent: "center"}} variant="default" onClick={()=>{open(); setActive(1);}}>
+    <img style={{height: "50px", width: "50px"}} src={timelineSvg}/> 
+    </UnstyledButton>
     </Group>      
+      <Modal opened={opened} onClose={close} title={active === 1 ? "Timeline" : "Your Previous Reports"}>
+      {active === 1 ? <Timeline active={1} bulletSize={24} lineWidth={2}>
+      <Timeline.Item bullet={<IconGitBranch size={12} />} title="New branch">
+        <Text c="dimmed" size="sm">You&apos;ve created new branch <Text variant="link" component="span" inherit>fix-notifications</Text> from master</Text>
+        <Text size="xs" mt={4}>2 hours ago</Text>
+      </Timeline.Item>
+
+      <Timeline.Item bullet={<IconGitCommit size={12} />} title="Commits">
+        <Text c="dimmed" size="sm">You&apos;ve pushed 23 commits to<Text variant="link" component="span" inherit>fix-notifications branch</Text></Text>
+        <Text size="xs" mt={4}>52 minutes ago</Text>
+      </Timeline.Item>
+
+      <Timeline.Item title="Pull request" bullet={<IconGitPullRequest size={12} />} lineVariant="dashed">
+        <Text c="dimmed" size="sm">You&apos;ve submitted a pull request<Text variant="link" component="span" inherit>Fix incorrect notification message (#187)</Text></Text>
+        <Text size="xs" mt={4}>34 minutes ago</Text>
+      </Timeline.Item>
+
+      <Timeline.Item title="Code review" bullet={<IconMessageDots size={12} />}>
+        <Text c="dimmed" size="sm"><Text variant="link" component="span" inherit>Robert Gluesticker</Text> left a code review on your pull request</Text>
+        <Text size="xs" mt={4}>12 minutes ago</Text>
+      </Timeline.Item>
+    </Timeline> : <List
+      size="sm"
+      center
+      icon={
+        <ThemeIcon color="teal" size={24} radius="xl">
+          <IconCircleCheck size="1rem" />
+        </ThemeIcon>
+      }
+    >
+      {/* <List.Item
+        icon={
+          <ThemeIcon color="red" size={24} radius="xl">
+            <IconCircleDashed size="1rem" />
+          </ThemeIcon>
+        }
+      >
+        <List listStyleType="disc">
+        <Text>Ongoing</Text>
+        <List.Item>09-08-2023 | 1.42 PM</List.Item>
+
+        </List>
+      </List.Item>
+      <Space h="sm" /> */}
+      <List.Item>
+        <List listStyleType="disc">
+          <Text>Completed</Text>
+          <List.Item>09-25-2023 | 3.41 PM</List.Item>
+        </List>
+      </List.Item>
+      <Space h="sm" />
+      <List.Item>
+        <List listStyleType="disc">
+          <Text>Completed</Text>
+          <List.Item>09-21-2023 | 11.47 AM</List.Item>
+        </List>
+      </List.Item>
+      <Space h="sm" />
+      <List.Item>
+        <List listStyleType="disc">
+          <Text>Completed</Text>
+          <List.Item>09-12-2023 | 1.45 PM</List.Item>
+        </List>
+      </List.Item>
+    </List>}
+      </Modal>
+    </>
   );
 }
