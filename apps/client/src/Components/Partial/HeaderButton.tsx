@@ -1,4 +1,4 @@
-import { Group, Button } from '@mantine/core';
+import { Group, UnstyledButton } from '@mantine/core';
 import {IconArrowLeft } from '@tabler/icons-react';
 import { useNavigate } from 'react-router';
 
@@ -7,8 +7,9 @@ export default function HeaderButton() {
   
   return (
     <Group justify="flex-start">
-      <Button onClick={()=>{navigate("/report", )}} leftSection={<IconArrowLeft size={24} />} variant="default">
-      </Button>
+      <UnstyledButton onClick={()=>{navigate("/report", )}} variant="default">
+        <IconArrowLeft size={24} />
+      </UnstyledButton>
     </Group>
   );
 }

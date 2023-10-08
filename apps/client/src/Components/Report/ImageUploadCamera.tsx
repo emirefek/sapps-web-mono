@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from "react";
-import { Group, Button } from "@mantine/core";
+import { Group, Button, UnstyledButton, Flex } from "@mantine/core";
 import HeaderButton from "../Partial/HeaderButton";
 import axios from "axios";
 import { trpc } from "../../lib/trpc";
@@ -142,7 +142,15 @@ function ImageUploadCamera() {
   };
 
   return (
-    <div style={{ width: "100%" }}>
+      <Flex
+        align={"flex-start"}
+        justify={"space-between"}
+        direction={"column"}
+        style={{
+          height: "100vh",
+          width: "100%",
+        }}
+      >
       <HeaderButton />
       <canvas ref={canvasRef} style={{ display: "none" }} />
       {capturedImage && (
@@ -177,7 +185,7 @@ function ImageUploadCamera() {
       <Group justify="flex-end" grow>
         {!capturedImage ? null : (
           <>
-            <Button onClick={retry} variant="default">
+            <Button onClick={retry} variant="danger">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="icon icon-tabler icon-tabler-rotate-clockwise"
@@ -194,7 +202,7 @@ function ImageUploadCamera() {
                 <path d="M4.05 11a8 8 0 1 1 .5 4m-.5 5v-5h5"></path>
               </svg>
             </Button>
-            <Button onClick={uploadImage} variant="default">
+            <Button onClick={uploadImage} variant="primary">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="icon icon-tabler icon-tabler-arrow-narrow-right"
@@ -261,9 +269,11 @@ function ImageUploadCamera() {
           type="file"
           accept="image/*" // Define accepted file types if needed
           onChange={handleFileChange}
+          style={{ display: "none" }}
         ></input>
       </Group>
-    </div>
+
+      </Flex>
   );
 }
 

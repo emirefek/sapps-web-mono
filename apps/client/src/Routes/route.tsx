@@ -3,6 +3,7 @@ import Home from "../Pages/Home/Home";
 import Report from "../Pages/Report/Report";
 import Dev from "../Pages/Dev/Dev";
 import ImageUploadCamera from "../Components/Report/ImageUploadCamera";
+import NearbyReports from "../Pages/Report/NearbyReports";
 
 const routes: RouteObject[] = [
   {
@@ -17,7 +18,10 @@ const routes: RouteObject[] = [
     path: "/report/picture",
     element: <ImageUploadCamera />,
   },
-
+  {
+    path: "/report/nearby",
+    element: <NearbyReports />,
+  },
   {
     path: "/dev",
     element: <Dev />,

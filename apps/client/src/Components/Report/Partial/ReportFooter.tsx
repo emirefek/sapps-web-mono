@@ -4,7 +4,7 @@ import firesvg from "../FIRE.svg";
 import previousReportSvg from "../PreviousReport.svg";
 import timelineSvg from "../Timeline.svg";
 import { useDisclosure } from '@mantine/hooks';
-import { IconGitBranch, IconGitPullRequest, IconGitCommit, IconMessageDots, IconCircleCheck, IconCircleDashed  } from '@tabler/icons-react';
+import { IconGitBranch, IconGitPullRequest, IconGitCommit, IconMessageDots, IconCircleCheck  } from '@tabler/icons-react';
 import { useState } from 'react';
 export default function ReportFooter() {
   const navigate = useNavigate();
