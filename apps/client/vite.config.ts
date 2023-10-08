@@ -1,19 +1,22 @@
-import { defineConfig } from "vite";
+import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react";
 
 // https://vitejs.dev/config/
-export default defineConfig({
-  plugins: [react()],
-  envDir: "../../",
-  resolve: {
-    alias: {
-      "@server": "../../server",
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), "");
+  return {
+    plugins: [react()],
+    envDir: "../../",
+    resolve: {
+      alias: {
+        "@server": "../../server",
+      },
     },
-  },
-  preview: {
-    port: 8080,
-    cors: {
-      origin: "*",
+    preview: {
+      port: Number(env.PORT ?? 8080),
+      cors: {
+        origin: "*",
+      },
     },
-  },
+  };
 });
