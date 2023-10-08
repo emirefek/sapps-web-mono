@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { publicProcedure, router } from "@/lib/trpc";
 import { ivQueueAdd } from "@/queue/iv";
 import { z } from "zod";
+import { getBoundsOfDistance } from "geolib";
 
 const reportRouter = router({
   new: publicProcedure
@@ -27,27 +28,60 @@ const reportRouter = router({
 
       return onDb;
     }),
-  all: publicProcedure.query(async () => {
-    const data = await prisma.report.findMany({
-      where: {
-        OR: [
-          {
-            status: "APPROVED",
-          },
-          {
-            status: "REJECTED",
-          },
-          {
-            status: "PENDING",
-          },
-        ],
-      },
-    });
+  all: publicProcedure
+    .input(
+      z
+        .object({
+          longitude: z.number(),
+          latitude: z.number(),
+          radius: z.number(),
+        })
+        .nullish()
+    )
+    .query(async ({ input }) => {
+      const getFilterQuery = () => {
+        if (!input) {
+          return null;
+        }
 
-    console.log(data);
+        const bounds = getBoundsOfDistance(
+          { latitude: input.latitude, longitude: input.longitude },
+          input.radius * 1000 // radius is converted from km to meters as getBoundsOfDistance expects meters
+        );
 
-    return data;
-  }),
+        return {
+          latitude: {
+            gte: bounds[0].latitude,
+            lte: bounds[1].latitude,
+          },
+          longitude: {
+            gte: bounds[0].longitude,
+            lte: bounds[1].longitude,
+          },
+        };
+      };
+
+      const data = await prisma.report.findMany({
+        where: {
+          OR: [
+            {
+              status: "APPROVED",
+            },
+            // {
+            //   status: "REJECTED",
+            // },
+            // {
+            //   status: "PENDING",
+            // },
+          ],
+          ...getFilterQuery(),
+        },
+      });
+
+      console.log(data);
+
+      return data;
+    }),
 });
 
 export default reportRouter;
