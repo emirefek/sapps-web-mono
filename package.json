@@ -9,6 +9,7 @@
     "apps/server"
   ],
   "scripts": {
+    "start:client": "npm run preview -w client",
     "start:server": "npm run start -w server",
     "build": "npm run build:client && npm run build:server",
     "build:client": "npm run build -w client",

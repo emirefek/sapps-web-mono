@@ -10,4 +10,10 @@ export default defineConfig({
       "@server": "../../server",
     },
   },
+  preview: {
+    port: 8080,
+    cors: {
+      origin: "*",
+    },
+  },
 });
