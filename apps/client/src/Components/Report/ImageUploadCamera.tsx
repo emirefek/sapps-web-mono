@@ -3,9 +3,15 @@ import { Group, Button, Flex, Text } from "@mantine/core";
 import HeaderButton from "../Partial/HeaderButton";
 import axios from "axios";
 import { trpc } from "../../lib/trpc";
-import { useDisclosure } from '@mantine/hooks';
-import { Modal } from '@mantine/core';
+import { useDisclosure } from "@mantine/hooks";
+import { Modal } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
+import {
+  IconRotateClockwise,
+  IconArrowNarrowRight,
+  IconCameraRotate,
+  IconCamera,
+} from "@tabler/icons-react";
 
 function ImageUploadCamera() {
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -13,7 +19,7 @@ function ImageUploadCamera() {
   const [capturedImage, setCapturedImage] = useState<string>("");
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
-  const [trpcSuccessful, setTrpcSuccessful] = useState<boolean>(true); 
+  const [trpcSuccessful, setTrpcSuccessful] = useState<boolean>(true);
   const [ar, setAr] = useState<number>(1);
   const [facingMode, setFacingMode] = useState<string>("environment");
   const mutNewReport = trpc.report.new.useMutation();
@@ -66,12 +72,12 @@ function ImageUploadCamera() {
         },
       });
 
-      const respStatus = resp1.status
-      if (respStatus){
+      const respStatus = resp1.status;
+      if (respStatus) {
         open();
       }
 
-      if (respStatus === "REJECTED" || respStatus === "PENDING"){
+      if (respStatus === "REJECTED" || respStatus === "PENDING") {
         setTrpcSuccessful(false);
       }
       // navigate("/report");
@@ -203,82 +209,20 @@ function ImageUploadCamera() {
         {!capturedImage ? null : (
           <>
             <Button onClick={retry} variant="danger">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="icon icon-tabler icon-tabler-rotate-clockwise"
-                width={24}
-                height={24}
-                viewBox="0 0 24 24"
-                strokeWidth="2"
-                stroke="currentColor"
-                fill="none"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M4.05 11a8 8 0 1 1 .5 4m-.5 5v-5h5"></path>
-              </svg>
+              <IconRotateClockwise />
             </Button>
             <Button onClick={uploadImage} variant="primary">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="icon icon-tabler icon-tabler-arrow-narrow-right"
-                width={24}
-                height={24}
-                viewBox="0 0 24 24"
-                strokeWidth="2"
-                stroke="currentColor"
-                fill="none"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M5 12l14 0"></path>
-                <path d="M15 16l4 -4"></path>
-                <path d="M15 8l4 4"></path>
-              </svg>
+              <IconArrowNarrowRight />
             </Button>
           </>
         )}
         {capturedImage ? null : (
           <>
             <Button onClick={changeFacingMode} variant="default">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="icon icon-tabler icon-tabler-camera-rotate"
-                width={24}
-                height={24}
-                viewBox="0 0 24 24"
-                strokeWidth="2"
-                stroke="currentColor"
-                fill="none"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M5 7h1a2 2 0 0 0 2 -2a1 1 0 0 1 1 -1h6a1 1 0 0 1 1 1a2 2 0 0 0 2 2h1a2 2 0 0 1 2 2v9a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-9a2 2 0 0 1 2 -2"></path>
-                <path d="M11.245 15.904a3 3 0 0 0 3.755 -2.904m-2.25 -2.905a3 3 0 0 0 -3.75 2.905"></path>
-                <path d="M14 13h2v2"></path>
-                <path d="M10 13h-2v-2"></path>
-              </svg>
+              <IconCameraRotate />
             </Button>
             <Button onClick={captureImage} variant="default">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="icon icon-tabler icon-tabler-camera"
-                width={24}
-                height={24}
-                viewBox="0 0 24 24"
-                strokeWidth="2"
-                stroke="currentColor"
-                fill="none"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M5 7h1a2 2 0 0 0 2 -2a1 1 0 0 1 1 -1h6a1 1 0 0 1 1 1a2 2 0 0 0 2 2h1a2 2 0 0 1 2 2v9a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-9a2 2 0 0 1 2 -2"></path>
-                <path d="M9 13a3 3 0 1 0 6 0a3 3 0 0 0 -6 0"></path>
-              </svg>
+              <IconCamera />
             </Button>
           </>
         )}
@@ -288,13 +232,26 @@ function ImageUploadCamera() {
           onChange={handleFileChange}
           style={{ display: "none" }}
         ></input>
-        <div style={{display: "flex", alignContent: "center", justifyContent: "center"}}>
-      <Modal opened={opened} onClose={close} title="Result">
-        <Text c="red">{trpcSuccessful ? "Upload Successful" : "Upload Failed"}</Text>
-        <Button onClick={()=>{navigate("/report", {replace: true})}}>Go Back to Main Page</Button>
-      </Modal>
-      
-    </div>
+        <div
+          style={{
+            display: "flex",
+            alignContent: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Modal opened={opened} onClose={close} title="Result">
+            <Text c="red">
+              {trpcSuccessful ? "Upload Successful" : "Upload Failed"}
+            </Text>
+            <Button
+              onClick={() => {
+                navigate("/report", { replace: true });
+              }}
+            >
+              Go Back to Main Page
+            </Button>
+          </Modal>
+        </div>
       </Group>
     </Flex>
   );
