@@ -40,12 +40,12 @@ async function main() {
 
   app.use("/panel", (_, res) => {
     return res.send(
-      renderTrpcPanel(appRouter, { url: "http://localhost:3000/trpc" })
+      renderTrpcPanel(appRouter, { url: process.env.VITE_API_URL + "/trpc" })
     );
   });
 
-  app.listen(3000);
-  console.log("🚀 Server ready at http://localhost:3000");
+  app.listen(process.env.PORT ?? 3000);
+  console.log("🚀 Server ready at " + process.env.PORT ?? 3000);
   console.log("DEMO: ", process.env.DEMO);
 
   // const redisCon = redisImQueueConnection;
