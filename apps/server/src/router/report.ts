@@ -3,6 +3,8 @@ import { publicProcedure, router } from "@/lib/trpc";
 import { ivQueueAdd } from "@/queue/iv";
 import { z } from "zod";
 import { getBoundsOfDistance } from "geolib";
+import { ivSendImage } from "@/lib/ivfetch";
+import { tryCatch } from "bullmq";
 
 const reportRouter = router({
   new: publicProcedure
@@ -24,9 +26,25 @@ const reportRouter = router({
         },
       });
 
-      ivQueueAdd(onDb.id.toString());
+      // ivQueueAdd(onDb.id.toString());
 
-      return onDb;
+      let ivResp = false;
+      try {
+        ivResp = (await ivSendImage(onDb.image)) ? true : false;
+      } catch (error) {
+        console.error("Error:", error);
+      }
+
+      const updatedOnDb = await prisma.report.update({
+        where: {
+          id: onDb.id,
+        },
+        data: {
+          status: ivResp ? "APPROVED" : "REJECTED",
+        },
+      });
+
+      return updatedOnDb;
     }),
   all: publicProcedure
     .input(
