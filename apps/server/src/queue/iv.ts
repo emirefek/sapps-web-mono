@@ -15,7 +15,7 @@ export const ivQueueAdd = async (id: string) => {
       id: id,
     },
     {
-      attempts: 99999999,
+      attempts: 3,
       backoff: {
         delay: 5 * 1000,
         type: "fixed",

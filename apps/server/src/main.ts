@@ -18,6 +18,7 @@ import { ivWorker } from "./queue/ivWorker";
 async function main() {
   // express implementation
   const app = express();
+
   app.use(
     cors({
       origin: "*",
@@ -49,6 +50,7 @@ async function main() {
 
   const redisCon = redisImQueueConnection;
   console.log(await redisCon.hello());
+  redisCon.flushall();
   console.log("ivQueue jobs", (await ivQueue.getJobs()).length);
   console.log("ivWorker", (await ivWorker.client).status);
 }

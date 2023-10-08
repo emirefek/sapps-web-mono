@@ -28,7 +28,7 @@ export const ivWorker = new Worker(
       throw new Error("ivResp is undefined");
     }
 
-    console.log("ivResp", ivResp);
+    // console.log("ivResp", ivResp);
 
     const randBool = Math.random() >= 0.5;
     const status = ivResp ? "APPROVED" : "REJECTED";
