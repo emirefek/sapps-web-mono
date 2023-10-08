@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { publicProcedure, router } from "@/lib/trpc";
+import { publicProcedure, router } from "./lib/trpc";
 import demoRouter from "./router/demo";
 import reportRouter from "./router/report";
 import stationRouter from "./router/station";

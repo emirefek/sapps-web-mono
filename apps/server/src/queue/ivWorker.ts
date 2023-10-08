@@ -1,6 +1,6 @@
-import { ivSendImage } from "@/lib/ivfetch";
-import { prisma } from "@/lib/prisma";
-import { redisImQueueConnection } from "@/lib/redis";
+import { ivSendImage } from "../lib/ivfetch";
+import { prisma } from "../lib/prisma";
+import { redisImQueueConnection } from "../lib/redis";
 import { Worker } from "bullmq";
 
 export const ivWorker = new Worker(

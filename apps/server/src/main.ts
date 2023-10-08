@@ -11,9 +11,9 @@ import express from "express";
 import { appRouter } from "./router";
 import cors from "cors";
 import { renderTrpcPanel } from "trpc-panel";
-import { redisImQueueConnection } from "./lib/redis";
-import { ivQueue } from "./queue/iv";
-import { ivWorker } from "./queue/ivWorker";
+// import { redisImQueueConnection } from "./lib/redis";
+// import { ivQueue } from "./queue/iv";
+// import { ivWorker } from "./queue/ivWorker";
 
 async function main() {
   // express implementation
@@ -48,11 +48,11 @@ async function main() {
   console.log("🚀 Server ready at http://localhost:3000");
   console.log("DEMO: ", process.env.DEMO);
 
-  const redisCon = redisImQueueConnection;
-  console.log(await redisCon.hello());
-  redisCon.flushall();
-  console.log("ivQueue jobs", (await ivQueue.getJobs()).length);
-  console.log("ivWorker", (await ivWorker.client).status);
+  // const redisCon = redisImQueueConnection;
+  // console.log(await redisCon.hello());
+  // redisCon.flushall();
+  // console.log("ivQueue jobs", (await ivQueue.getJobs()).length);
+  // console.log("ivWorker", (await ivWorker.client).status);
 }
 
 void main();
