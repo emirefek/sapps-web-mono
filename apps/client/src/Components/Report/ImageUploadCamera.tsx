@@ -1,8 +1,11 @@
 import { useRef, useState, useEffect } from "react";
-import { Group, Button, Flex } from "@mantine/core";
+import { Group, Button, Flex, Text } from "@mantine/core";
 import HeaderButton from "../Partial/HeaderButton";
 import axios from "axios";
 import { trpc } from "../../lib/trpc";
+import { useDisclosure } from '@mantine/hooks';
+import { Modal } from '@mantine/core';
+import { useNavigate } from "react-router-dom";
 
 function ImageUploadCamera() {
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -10,11 +13,14 @@ function ImageUploadCamera() {
   const [capturedImage, setCapturedImage] = useState<string>("");
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
+  const [trpcSuccessful, setTrpcSuccessful] = useState<boolean>(true); 
   const [ar, setAr] = useState<number>(1);
   const [facingMode, setFacingMode] = useState<string>("environment");
   const mutNewReport = trpc.report.new.useMutation();
   const upload_preset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
   const cloud_name = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+  const [opened, { open, close }] = useDisclosure(false);
+  const navigate = useNavigate();
 
   function changeFacingMode() {
     setFacingMode(facingMode === "environment" ? "user" : "environment");
@@ -59,8 +65,15 @@ function ImageUploadCamera() {
           longitude: longitude || 0,
         },
       });
-      console.log("trpcMutateResp", resp1);
 
+      const respStatus = resp1.status
+      if (respStatus){
+        open();
+      }
+
+      if (respStatus === "REJECTED" || respStatus === "PENDING"){
+        setTrpcSuccessful(false);
+      }
       // navigate("/report");
       return resp.data;
     }
@@ -275,6 +288,13 @@ function ImageUploadCamera() {
           onChange={handleFileChange}
           style={{ display: "none" }}
         ></input>
+        <div style={{display: "flex", alignContent: "center", justifyContent: "center"}}>
+      <Modal opened={opened} onClose={close} title="Result">
+        <Text c="red">{trpcSuccessful ? "Upload Successful" : "Upload Failed"}</Text>
+        <Button onClick={()=>{navigate("/report", {replace: true})}}>Go Back to Main Page</Button>
+      </Modal>
+      
+    </div>
       </Group>
     </Flex>
   );
