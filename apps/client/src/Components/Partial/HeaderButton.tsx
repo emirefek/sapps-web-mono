@@ -13,7 +13,7 @@ export default function HeaderButton() {
         }}
         variant="default"
       >
-        <IconArrowLeft size={24} />
+        <IconArrowLeft size={60} />
       </UnstyledButton>
     </Group>
   );

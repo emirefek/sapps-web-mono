@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from "react";
-import { Group, Button, Flex, Text } from "@mantine/core";
+import { UnstyledButton, Button, Flex, Text, Space } from "@mantine/core";
 import HeaderButton from "../Partial/HeaderButton";
 import axios from "axios";
 import { trpc } from "../../lib/trpc";
@@ -12,13 +12,12 @@ import {
   IconCameraRotate,
   IconCamera,
 } from "@tabler/icons-react";
+import { useLocation } from "../../context/LocationProvider"
 
 function ImageUploadCamera() {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [capturedImage, setCapturedImage] = useState<string>("");
-  const [latitude, setLatitude] = useState<number | null>(null);
-  const [longitude, setLongitude] = useState<number | null>(null);
   const [trpcSuccessful, setTrpcSuccessful] = useState<boolean>(true);
   const [ar, setAr] = useState<number>(1);
   const [facingMode, setFacingMode] = useState<string>("environment");
@@ -27,23 +26,10 @@ function ImageUploadCamera() {
   const cloud_name = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
   const [opened, { open, close }] = useDisclosure(false);
   const navigate = useNavigate();
+  const { latitude, longitude } = useLocation();
 
   function changeFacingMode() {
     setFacingMode(facingMode === "environment" ? "user" : "environment");
-  }
-
-  function getLocation() {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(showPosition);
-    } else {
-      console.warn("geolocation not supported");
-    }
-  }
-
-  function showPosition(position: GeolocationPosition) {
-    const coords = position.coords;
-    setLatitude(coords.latitude);
-    setLongitude(coords.longitude);
   }
 
   async function uploadImage() {
@@ -91,10 +77,13 @@ function ImageUploadCamera() {
       if (videoRef.current && videoRef.current.srcObject) {
         const tracks = (videoRef.current.srcObject as MediaStream).getTracks();
         tracks.forEach((track) => track.stop());
+        videoRef.current.srcObject = null;
       }
 
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: facingMode },
+        video: { 
+          facingMode: facingMode,
+        },
       });
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
@@ -132,36 +121,12 @@ function ImageUploadCamera() {
   };
 
   useEffect(() => {
-    getLocation();
-  }, []);
-
-  useEffect(() => {
     startCamera();
   }, [facingMode]);
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = event.target.files?.[0]; // Get the first selected file
-
-    if (selectedFile) {
-      // Create a FileReader
-      const reader = new FileReader();
-
-      // Define a callback function for when the FileReader has finished reading the file
-      reader.onload = (e) => {
-        // e.target.result contains the data URL
-        const dataURL = e.target?.result as string;
-        setCapturedImage(dataURL);
-      };
-
-      // Read the selected file as a data URL
-      reader.readAsDataURL(selectedFile);
-    }
-  };
 
   return (
     <Flex
-      align={"flex-start"}
-      justify={"space-between"}
       direction={"column"}
       style={{
         height: "100vh",
@@ -205,25 +170,28 @@ function ImageUploadCamera() {
           />
         </div>
       )}
-      <Group justify="flex-end" grow>
+      <Space h="sm" />
+      <Flex
+        align={"center"}
+        justify={"space-evenly"}
+        
+      >
         {!capturedImage ? null : (
           <>
-            <Button leftSection={<IconRotateClockwise />} onClick={retry} variant="default"/>
-            <Button leftSection={<IconArrowNarrowRight />} onClick={uploadImage} variant="default" />
+            <UnstyledButton onClick={retry}><IconRotateClockwise size={60}/></UnstyledButton>
+            <UnstyledButton onClick={uploadImage} variant="default"><IconArrowNarrowRight size={60}/></UnstyledButton>
           </>
         )}
         {capturedImage ? null : (
           <>
-            <Button leftSection={<IconCameraRotate />} onClick={changeFacingMode} variant="default" />
-            <Button leftSection={<IconCamera />} onClick={captureImage} variant="default" />
+            <UnstyledButton onClick={changeFacingMode} variant="default"><IconCameraRotate size={60}/></UnstyledButton>
+            <UnstyledButton onClick={captureImage} variant="default" ><IconCamera size={60}/></UnstyledButton>
           </>
         )}
-        <input
-          type="file"
-          accept="image/*" // Define accepted file types if needed
-          onChange={handleFileChange}
-          style={{ display: "none" }}
-        ></input>
+        
+        
+      </Flex>
+      <Flex>
         <div
           style={{
             display: "flex",
@@ -244,7 +212,7 @@ function ImageUploadCamera() {
             </Button>
           </Modal>
         </div>
-      </Group>
+        </Flex>
     </Flex>
   );
 }
