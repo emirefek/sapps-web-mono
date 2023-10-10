@@ -83,9 +83,12 @@ function ImageUploadCamera() {
 
       if (respStatus === "REJECTED" || respStatus === "PENDING") {
         setTrpcStatus("fail");
+      } else {
+        setTrpcStatus("success");
       }
-      // navigate("/report");
+
       return resp.data;
+      // navigate("/report");
     }
   }
 
