@@ -1,5 +1,12 @@
-import { useRef, useState, useEffect } from "react";
-import { UnstyledButton, Button, Flex, Text, Space } from "@mantine/core";
+import { useRef, useState, useEffect, useCallback } from "react";
+import {
+  UnstyledButton,
+  Button,
+  Flex,
+  Text,
+  Space,
+  Loader,
+} from "@mantine/core";
 import HeaderButton from "../../Components/Partial/HeaderButton";
 import axios from "axios";
 import { trpc } from "../../lib/trpc";
@@ -13,6 +20,7 @@ import {
   IconCamera,
 } from "@tabler/icons-react";
 import { useLocation } from "../../context/LocationProvider";
+import { useBeforeUnload } from "react-router-dom";
 
 function ImageUploadCamera() {
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -29,6 +37,12 @@ function ImageUploadCamera() {
   const [opened, { open, close }] = useDisclosure(false);
   const navigate = useNavigate();
   const { latitude, longitude } = useLocation();
+
+  useBeforeUnload(
+    useCallback(() => {
+      stopCamera();
+    }, [videoRef])
+  );
 
   function changeFacingMode() {
     setFacingMode(facingMode === "environment" ? "user" : "environment");
@@ -101,6 +115,19 @@ function ImageUploadCamera() {
     }
   };
 
+  const stopCamera = () => {
+    if (videoRef.current && videoRef.current.srcObject) {
+      const tracks = (videoRef.current.srcObject as MediaStream).getTracks();
+      tracks.forEach((track) => {
+        track.stop();
+        console.log("Track stopped:", track);
+      });
+      videoRef.current.srcObject = null;
+    } else {
+      console.error("No video element or no stream found");
+    }
+  };
+
   const captureImage = () => {
     if (videoRef.current && canvasRef.current) {
       const context = canvasRef.current.getContext("2d");
@@ -117,6 +144,7 @@ function ImageUploadCamera() {
         setCapturedImage(capturedImageDataUrl);
       }
     }
+    stopCamera();
   };
 
   const retry = () => {
@@ -126,6 +154,8 @@ function ImageUploadCamera() {
 
   useEffect(() => {
     startCamera();
+
+    return stopCamera;
   }, [facingMode]);
 
   return (
@@ -174,9 +204,13 @@ function ImageUploadCamera() {
         </div>
       )}
       <Space h="sm" />
-      {trpcStatus === "loading" &&
-        "We are looking for lighter fire in the image. Wait..."}
-      <Text></Text>
+      {trpcStatus === "loading" && (
+        <Flex direction="row" align="center" justify="space-between">
+          <Loader />
+          <p>We are looking for lighter fire in the image. Wait...</p>
+        </Flex>
+      )}
+      {/* <Button onClick={stopCamera}>stop camera</Button> */}
       <Flex align={"center"} justify={"space-evenly"}>
         {!capturedImage ? null : (
           <>
