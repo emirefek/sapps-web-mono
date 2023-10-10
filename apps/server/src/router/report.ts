@@ -80,6 +80,9 @@ const reportRouter = router({
       };
 
       const data = await prisma.report.findMany({
+        orderBy: {
+          timestamp: "desc",
+        },
         where: {
           status: "APPROVED",
           // OR: [
