@@ -8,9 +8,10 @@ ADD best17.pt /yolov8/
 
 RUN apt-get update \
     && apt-get install --no-install-recommends -y libgl1-mesa-glx libglib2.0-0 python3 python3-pip  \
-    && pip3 install ultralytics opencv-python flask python-dotenv omegaconf waitress \
+    && pip3 install ultralytics opencv-python flask python-dotenv omegaconf waitress runpod \
     && rm -rf /var/lib/apt/lists/*
 
+EXPOSE 5000
 
 # ENTRYPOINT ["yolo"]
 ENTRYPOINT ["python3", "./app.py"]
