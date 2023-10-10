@@ -1,5 +1,4 @@
 import axios from "axios";
-import sharp from "sharp";
 
 export async function ivSendImage(image_url: string) {
   try {
