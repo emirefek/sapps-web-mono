@@ -1,34 +1,19 @@
 import ReportHeader from "../../Components/Report/Partial/ReportHeader";
 import { Flex } from "@mantine/core";
 import ReportFooter from "../../Components/Report/Partial/ReportFooter";
-import { useEffect, useState } from "react";
 import { Loader } from "@googlemaps/js-api-loader";
+import { useLocation } from "../../context/LocationProvider";
 
 export default function Report() {
-  const [location, setLocation] = useState<{
-    lat: number;
-    lng: number;
-  } | null>(null);
+  const { latitude, longitude } = useLocation();
+
+  console.log(latitude, longitude);
+  
 
   const loader = new Loader({
     apiKey: import.meta.env.VITE_GOOGLE_API_KEY,
     version: "weekly",
   });
-
-  function setPosition(position: GeolocationPosition) {
-    setLocation({
-      lat: position.coords.latitude,
-      lng: position.coords.longitude,
-    });
-  }
-
-  function getLocation() {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(setPosition);
-    } else {
-      console.warn("geolocation not supported");
-    }
-  }
 
   loader.importLibrary("core").then(async () => {
     const { Map } = (await google.maps.importLibrary(
@@ -36,22 +21,16 @@ export default function Report() {
     )) as google.maps.MapsLibrary;
 
     const map = new Map(document.getElementById("map") as HTMLElement, {
-      center: location,
+      center: { lat: latitude || 0, lng: longitude || 0 },
       zoom: 18,
-    });
+    }); 
 
     new google.maps.Marker({
-      position: location,
+      position: { lat: latitude || 0, lng: longitude || 0 },
       map,
       title: "Current location",
     });
   });
-
-  useEffect(() => {
-    getLocation();
-  }, []);
-
-  useEffect(() => {}, []);
 
   return (
     <Flex

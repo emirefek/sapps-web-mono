@@ -1,8 +1,8 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
 interface LocationContextType {
-  latitude: number | null;
-  longitude: number | null;
+  latitude: number;
+  longitude: number;
 }
 
 const LocationContext = createContext<LocationContextType | undefined>(undefined);
@@ -22,8 +22,8 @@ interface LocationProviderProps {
 
 export function LocationProvider({ children }: LocationProviderProps) {
   const [location, setLocation] = useState<LocationContextType>({
-    latitude: null,
-    longitude: null,
+    latitude: 0,
+    longitude: 0,
   });
 
   useEffect(() => {
