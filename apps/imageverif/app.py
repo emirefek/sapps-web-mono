@@ -4,7 +4,10 @@ import numpy as np
 from ultralytics import YOLO
 import torch
 import base64
-from PIL import Image
+import logging
+
+# from dotenv import load_dotenv
+# from dotenv import dotenv_values
 
 # Load YOLOv8 model
 model = YOLO("best17.pt")
@@ -26,7 +29,8 @@ def process_yolo(image):
 
     boxes = results[0].boxes
     isBox = len(boxes) > 0  # returns one box
-    print("isFire", isBox)
+    logging.info(f"isFire: {isBox}")
+    # print("isFire", isBox)
     # box.xyxy
     # boxes.xyxy  # box with xyxy format, (N, 4)
     # boxes.xywh  # box with xywh format, (N, 4)
@@ -60,5 +64,14 @@ def process_image():
     return jsonify({"success": processed})
 
 
+@app.route("/test", methods=["GET"])
+def test():
+    return jsonify({"hello": "World"})
+
+
 if __name__ == "__main__":
-    app.run(debug=True, port=5000)
+    logging.basicConfig(level=logging.INFO)
+    from waitress import serve
+
+    serve(app, host="0.0.0.0", port=5000)
+    # app.run(host="0.0.0.0", debug=True, port=5000)
