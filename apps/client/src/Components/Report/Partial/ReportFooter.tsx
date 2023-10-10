@@ -20,14 +20,14 @@ import {
   IconMessageDots,
   IconCircleCheck,
 } from "@tabler/icons-react";
-import { useState, useEffect } from "react";
-import { trpc } from "../../../lib/trpc";
+import { useState } from "react";
+import { useLocation } from "../../../context/LocationProvider";
+import { useReports } from "../../../context/NearbyReportsProvider";
 
 export default function ReportFooter() {
   const navigate = useNavigate();
-  const [longitude, setLongitude] = useState<number>(0);
-  const [latitude, setLatitude] = useState<number>(0);
-  const { data } = trpc.report.all.useQuery();
+  const { latitude, longitude } = useLocation();
+  const reports = useReports();
   const [opened, { open, close }] = useDisclosure(false);
   const [active, setActive] = useState(1);
 
@@ -38,17 +38,20 @@ export default function ReportFooter() {
     lon2: number
   ): { isWithinRadius: boolean; distanceKm: number } {
     const earthRadiusKm = 6371; // Earth's radius in kilometers
-    const dLat = deg2rad(lat2 - lat1);
-    const dLon = deg2rad(lon2 - lon1);
-    const a =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(deg2rad(lat1)) *
-        Math.cos(deg2rad(lat2)) *
-        Math.sin(dLon / 2) *
-        Math.sin(dLon / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    const distanceKm = earthRadiusKm * c;
+    const lat1Rad = deg2rad(lat1);
+    const lon1Rad = deg2rad(lon1);
+    const lat2Rad = deg2rad(lat2);
+    const lon2Rad = deg2rad(lon2);
 
+    // Haversine formula
+      const dLat = lat2Rad - lat1Rad;
+      const dLon = lon2Rad - lon1Rad;
+      const a =
+        Math.sin(dLat / 2) ** 2 +
+        Math.cos(lat1Rad) * Math.cos(lat2Rad) * Math.sin(dLon / 2) ** 2;
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      const distanceKm = earthRadiusKm * c;
+      
     return {
       isWithinRadius: distanceKm <= 100,
       distanceKm: distanceKm,
@@ -70,23 +73,6 @@ export default function ReportFooter() {
     return `${month}-${day}-${year} ${hours}:${minutes}`;
   }
 
-  function getLocation() {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(showPosition);
-    } else {
-      console.warn("geolocation not supported");
-    }
-  }
-
-  function showPosition(position: GeolocationPosition) {
-    const coords = position.coords;
-    setLatitude(coords.latitude);
-    setLongitude(coords.longitude);
-  }
-
-  useEffect(() => {
-    getLocation();
-  }, []);
   return (
     <>
       <Group style={{ padding: "15px" }} justify="flex-end" grow>
@@ -175,7 +161,7 @@ export default function ReportFooter() {
               </ThemeIcon>
             }
           >
-            {data?.map((element) =>
+            {reports?.map((element) =>
               areCoordinatesWithinRadius(
                 element.latitude,
                 element.longitude,
