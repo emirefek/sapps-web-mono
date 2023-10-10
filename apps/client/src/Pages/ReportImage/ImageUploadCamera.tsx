@@ -60,6 +60,7 @@ function ImageUploadCamera() {
           longitude: longitude || 0,
         },
       });
+      console.log(resp1);
 
       const respStatus = resp1.status;
       if (respStatus) {
@@ -207,9 +208,19 @@ function ImageUploadCamera() {
           }}
         >
           <Modal opened={opened} onClose={close} title="Result">
-            <Text c={trpcStatus === "success" ? "green" : "red"}>
-              {trpcStatus ? "Upload Successful" : "Upload Failed"}
-            </Text>
+            {trpcStatus === "success" ? (
+              <div>
+                <Text c="green">We dedected lighter fire in the image.</Text>
+                <Text c="green">We take your report.</Text>
+              </div>
+            ) : (
+              <div>
+                <Text c="red">
+                  We couldn't dedected lighter fire in the image.
+                </Text>
+                <Text c="red">Please retry with lighter fire in the image</Text>
+              </div>
+            )}
             <Button
               onClick={() => {
                 navigate("/report", { replace: true });
