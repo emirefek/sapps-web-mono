@@ -18,7 +18,9 @@ function ImageUploadCamera() {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [capturedImage, setCapturedImage] = useState<string>("");
-  const [trpcSuccessful, setTrpcSuccessful] = useState<boolean>(true);
+  const [trpcStatus, setTrpcStatus] = useState<
+    "pending" | "loading" | "success" | "fail"
+  >("pending");
   const [ar, setAr] = useState<number>(1);
   const [facingMode, setFacingMode] = useState<string>("environment");
   const mutNewReport = trpc.report.new.useMutation();
@@ -35,6 +37,7 @@ function ImageUploadCamera() {
   async function uploadImage() {
     console.log(upload_preset, cloud_name);
     console.log(latitude, longitude);
+    setTrpcStatus("loading");
 
     if (capturedImage != "") {
       const resp = await axios({
@@ -64,7 +67,7 @@ function ImageUploadCamera() {
       }
 
       if (respStatus === "REJECTED" || respStatus === "PENDING") {
-        setTrpcSuccessful(false);
+        setTrpcStatus("fail");
       }
       // navigate("/report");
       return resp.data;
@@ -170,6 +173,9 @@ function ImageUploadCamera() {
         </div>
       )}
       <Space h="sm" />
+      {trpcStatus === "loading" &&
+        "We are looking for lighter fire in the image. Wait..."}
+      <Text></Text>
       <Flex align={"center"} justify={"space-evenly"}>
         {!capturedImage ? null : (
           <>
@@ -201,8 +207,8 @@ function ImageUploadCamera() {
           }}
         >
           <Modal opened={opened} onClose={close} title="Result">
-            <Text c="red">
-              {trpcSuccessful ? "Upload Successful" : "Upload Failed"}
+            <Text c={trpcStatus === "success" ? "green" : "red"}>
+              {trpcStatus ? "Upload Successful" : "Upload Failed"}
             </Text>
             <Button
               onClick={() => {
