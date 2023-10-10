@@ -27,7 +27,7 @@
   "license": "ISC",
   "engines": {
     "node": "18.x",
-    "npm": "10.2.0"
+    "npm": "10.x"
   },
   "devDependencies": {
     "dotenv-cli": "^7.3.0"
