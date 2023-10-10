@@ -17,7 +17,7 @@ export async function ivSendImage(image_url: string) {
     });
     console.log("postResponse", postResponse.data);
 
-    return postResponse.data.output === "true" ? true : false;
+    return postResponse.data.output === true ? true : false;
   } catch (error) {
     console.error("Error:", error);
   }
