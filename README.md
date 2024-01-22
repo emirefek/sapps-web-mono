@@ -22,6 +22,7 @@ We are deploying our
 - frontend, from render.com to global CDNs.
 - backend, from railway to a single point region.
 - using Postgres SQL from Neon Cloud Database
+- Ai and ML lambdas to Runpod.io cloud Ai&ML Platform
 
 ## .ENV file
 
